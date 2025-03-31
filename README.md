@@ -21,17 +21,56 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Movie Mate API
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A RESTful API built with NestJS for movie enthusiasts.
 
-## Project setup
+## Project Structure
+
+```
+src
+├── common/              # Shared utilities, guards, interceptors, pipes
+│   ├── guards/          # Authentication guards
+│   ├── interceptors/    # Response transformers and logging
+│   └── filters/         # Exception handling
+├── config/              # Configuration files (env, database)
+├── database/            # Database configurations and migrations
+├── modules/             # Main application modules
+│   └── users/           # User management module
+│       ├── dto/         # Data Transfer Objects
+│       ├── entities/    # Database entities
+│       ├── users.controller.ts
+│       ├── users.service.ts
+│       ├── users.repository.ts
+│       └── users.module.ts
+├── interceptors/        # Global interceptors
+├── guards/              # Global guards
+├── main.ts              # Entry point
+└── app.module.ts        # Root module
+```
+
+## Installation
 
 ```bash
 $ npm install
 ```
 
-## Compile and run the project
+## Configuration
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+PORT=3000
+JWT_SECRET=yoursecretkey
+
+POSTGRES_HOST='localhost'
+POSTGRES_PORT=5432
+POSTGRES_USER='postgres'
+POSTGRES_PASSWORD='your_password'
+POSTGRES_DATABASE='movie_mate'
+```
+
+## Running the app
 
 ```bash
 # development
