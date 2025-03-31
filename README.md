@@ -50,7 +50,7 @@ A NestJS application that consumes TMDB APIs, stores data in a database, and pro
 The API documentation is available via Swagger UI when the application is running:
 
 ```
-http://localhost:8080/api/docs
+http://localhost:3000/api/docs
 ```
 
 ### Main Endpoints
