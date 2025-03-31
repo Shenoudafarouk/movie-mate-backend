@@ -21,106 +21,152 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-# Movie Mate API
+# MovieMate API
 
-A RESTful API built with NestJS for movie enthusiasts.
+A NestJS application that consumes TMDB APIs, stores data in a database, and provides RESTful endpoints for movie exploration and user interaction.
+
+## Features
+
+- **Movie Browsing**: List, search, and filter movies with pagination
+- **User Management**: Register, login, and manage user profiles
+- **Movie Ratings**: Rate movies and leave comments
+- **Watchlist & Favorites**: Add movies to watchlist or mark as favorites
+- **Genre Filtering**: Filter movies by genre
+- **Caching**: Redis-based caching to reduce database calls
+- **API Security**: JWT-based authentication and authorization
+
+## Tech Stack
+
+- **Backend**: NestJS (TypeScript)
+- **Database**: PostgreSQL with TypeORM
+- **Caching**: Redis
+- **Authentication**: JWT
+- **Documentation**: Swagger/OpenAPI
+- **Testing**: Jest (Unit and E2E testing)
+- **Containerization**: Docker & Docker Compose
+
+## API Documentation
+
+The API documentation is available via Swagger UI when the application is running:
+
+```
+http://localhost:3000/api/docs
+```
+
+### Main Endpoints
+
+#### Authentication
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login and get JWT token
+
+#### Users
+
+- `GET /api/users` - Get all users (Admin only)
+- `GET /api/users/:id` - Get user by ID
+- `PATCH /api/users/:id` - Update user
+- `DELETE /api/users/:id` - Delete user
+
+#### Movies
+
+- `GET /api/movies` - Get all movies with pagination, filtering and search
+- `GET /api/movies/:id` - Get movie by ID
+- `POST /api/movies/:id/rate` - Rate a movie
+- `POST /api/movies/:id/watchlist` - Add movie to watchlist
+- `DELETE /api/movies/:id/watchlist` - Remove movie from watchlist
+- `POST /api/movies/:id/favorite` - Add movie to favorites
+- `DELETE /api/movies/:id/favorite` - Remove movie from favorites
+
+#### Genres
+
+- `GET /api/genres` - Get all genres
+
+## Installation and Setup
+
+### Prerequisites
+
+- Docker and Docker Compose
+- Node.js (for local development)
+
+### Running with Docker
+
+1. Clone the repository
+2. Create a `.env` file based on the `.env.example`
+3. Run the application:
+
+```bash
+docker-compose up
+```
+
+The application will be available at http://localhost:8080
+
+### Local Development Setup
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file based on the `.env.example`
+4. Start the development server:
+
+```bash
+npm run start:dev
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Unit tests
+npm run test
+
+# Test coverage
+npm run test:cov
+```
 
 ## Project Structure
 
 ```
-src
-├── common/              # Shared utilities, guards, interceptors, pipes
-│   ├── guards/          # Authentication guards
-│   ├── interceptors/    # Response transformers and logging
-│   └── filters/         # Exception handling
+src/
+├── common/              # Shared utilities, guards, interceptors, filters
 ├── config/              # Configuration files (env, database)
 ├── database/            # Database configurations and migrations
 ├── modules/             # Main application modules
-│   └── users/           # User management module
-│       ├── dto/         # Data Transfer Objects
-│       ├── entities/    # Database entities
-│       ├── users.controller.ts
-│       ├── users.service.ts
-│       ├── users.repository.ts
-│       └── users.module.ts
+│   ├── users/           # User management
+│   ├── auth/            # Authentication 
+│   ├── movies/          # Movie functionality
+│   └── tmdb/            # TMDB API integration
 ├── interceptors/        # Global interceptors
 ├── guards/              # Global guards
 ├── main.ts              # Entry point
 └── app.module.ts        # Root module
 ```
 
-## Installation
+## Data Synchronization
 
-```bash
-$ npm install
-```
+The application syncs data from TMDB using a scheduled task that:
 
-## Configuration
+1. Fetches new/updated movies from TMDB
+2. Transforms the data to match our schema
+3. Stores it in the PostgreSQL database
+4. Updates existing records if needed
 
-Create a `.env` file in the root directory with the following variables:
+## Caching Strategy
 
-```
-PORT=3000
-JWT_SECRET=yoursecretkey
+To reduce database calls, the application implements:
 
-POSTGRES_HOST='localhost'
-POSTGRES_PORT=5432
-POSTGRES_USER='postgres'
-POSTGRES_PASSWORD='your_password'
-POSTGRES_DATABASE='movie_mate'
-```
+- In-memory caching for frequently accessed data
+- Redis caching for more complex queries
+- Cache invalidation on data updates
+- Configurable TTL for different types of data
 
-## Running the app
+## License
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+This project is licensed under the MIT License.
 
 ## Support
 
@@ -131,7 +177,3 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
 - Website - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
